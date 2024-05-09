@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dynamic List Rendering</title>
+</head>
+<body>
+  <div id="root"></div>
+  <script src="https://www.unpkg.com/react@18.2.0/umd/react.development.js"></script>
+  <script src="https://www.unpkg.com/react-dom@18.2.0/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+
+  <script type="text/babel">
+    // Your ItemList component code will go here
+    function ItemList({ items }) {
+      return (
+        <ul>
+          {items.length === 0 ? (<li>No items found</li>) : (items.map((item, index) => <li key={index}>{item}</li>))}
+        </ul>
+      );
+    }
+
+    const itemList1 = ["Apple", "Banana", "Cherry","Mango","Orange","Licchi","PineApple","Kiwi","Papaya"];
+    const itemList2 = [];
+
+    var App = ()=>{
+        return(
+            <>
+            <h2>Test with items:</h2>
+           <ItemList items={itemList1} />
+              <h2>Test with no items:</h2>
+           <ItemList items={itemList2} />
+            </>
+        )
+    }
+    
+    ReactDOM.render(<App/>, document.getElementById('root'));
+  </script>
+</body>
+</html>
