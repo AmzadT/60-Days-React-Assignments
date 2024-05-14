@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Template</title>
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+  <script src="https://www.unpkg.com/react@18.2.0/umd/react.development.js"></script>
+  <script src="https://www.unpkg.com/react-dom@18.2.0/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script type="text/babel">
+    // Your  code will go here
+
+    const questionsData = [
+      {
+        question: "What is the capital of France?",
+        options: ["Paris", "London", "Berlin", "Madrid"],
+        correctAnswer: "Paris"
+      },
+      {
+        question: "What is 2 + 2?",
+        options: ["3", "4", "5", "6"],
+        correctAnswer: "4"
+      },
+      {
+        question: "Who wrote 'To Kill a Mockingbird'?",
+        options: ["Harper Lee", "Mark Twain", "J.K. Rowling", "Charles Dickens"],
+        correctAnswer: "Harper Lee"
+      }
+    ];
+
+    const Quiz = () => {
+      const [selectedAnswers, setSelectedAnswers] = React.useState(Array(questionsData.length).fill(null));
+      const [score, setScore] = React.useState(null);
+      const [showQuiz, setShowQuiz] = React.useState(true);
+
+      const handleAnswerChange = (questionIndex, optionIndex) => {
+        const newSelectedAnswers = [...selectedAnswers];
+        newSelectedAnswers[questionIndex] = questionsData[questionIndex].options[optionIndex];
+        setSelectedAnswers(newSelectedAnswers);
+      };
+
+      const handleSubmit = () => {
+        const calculatedScore = selectedAnswers.reduce((acc, answer, index) => {
+          return answer === questionsData[index].correctAnswer ? acc + 1 : acc;
+        }, 0);
+        setScore(calculatedScore);
+        setShowQuiz(false);
+      };
+
+      const handleRestart = () => {
+        setSelectedAnswers(Array(questionsData.length).fill(null));
+        setScore(null);
+        setShowQuiz(true);
+      };
+
+      return (
+        <div>
+          {showQuiz ? (
+            <div>
+              {questionsData.map((questionData, index) => (
+                <div key={index}>
+                  <h3>{questionData.question}</h3>
+                  <ul>
+                    {questionData.options.map((option, optionIndex) => (
+                      <li key={optionIndex}>
+                        <input
+                          type="radio"
+                          name={`question${index}`}
+                          value={option}
+                          checked={selectedAnswers[index] === option}
+                          onChange={() => handleAnswerChange(index, optionIndex)}
+                        />
+                        {option}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+              <button onClick={handleSubmit}>Submit</button>
+            </div>
+          ) : (
+            <div>
+              <h2>Your Score: {score} / {questionsData.length}</h2>
+              <button onClick={handleRestart}>Restart Quiz</button>
+            </div>
+          )}
+        </div>
+      );
+    };
+
+    ReactDOM.render(<Quiz />, document.getElementById("root"));
+
+  </script>
+</html>

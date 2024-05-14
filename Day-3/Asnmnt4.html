@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Template</title>
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+  <script src="https://www.unpkg.com/react@18.2.0/umd/react.development.js"></script>
+  <script src="https://www.unpkg.com/react-dom@18.2.0/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script type="text/babel">
+    // Your  code will go here
+
+    const TodoList = () => {
+      const [todos, setTodos] = React.useState([]);
+      const [filter, setFilter] = React.useState('all');
+
+      const handleAddTodo = () => {
+        const newTodo = prompt("Enter New Task:");
+        if (newTodo) {
+          setTodos([...todos, { id: Date.now(), text: newTodo, completed: false }]);
+        }
+      };
+
+      const handleToggleTodo = (id) => {
+        setTodos(
+          todos.map(todo =>
+            todo.id === id ? { ...todo, completed: !todo.completed } : todo
+          )
+        );
+      };
+
+      const handleRemoveTodo = (id) => {
+        setTodos(todos.filter(todo => todo.id !== id));
+      };
+
+      const handleFilterChange = (selectedFilter) => {
+        setFilter(selectedFilter);
+      };
+
+      const filteredTodos = filter === 'all' ? todos :
+        filter === 'active' ? todos.filter(todo => !todo.completed) :
+        todos.filter(todo => todo.completed);
+
+      return (
+        <div style={{width:'70%',margin:'auto'}}>
+          <button style={{padding:'10px'}} onClick={handleAddTodo}>Add Todo</button>
+          <div>
+            <button style={{padding:'10px',marginRight:'20px',marginTop:'20px'}} onClick={() => handleFilterChange('all')}>All</button>
+            <button style={{padding:'10px',marginRight:'20px',marginTop:'20px'}} onClick={() => handleFilterChange('active')}>Active</button>
+            <button style={{padding:'10px',marginRight:'20px',marginTop:'20px'}} onClick={() => handleFilterChange('completed')}>Completed</button>
+          </div>
+          <ul>
+            {filteredTodos.map(todo => (
+              <li key={todo.id} style={{ textDecoration: todo.completed ? 'line-through' : 'none' }}>
+                <h2 onClick={() => handleToggleTodo(todo.id)}>{todo.text}</h2>
+                <button style={{padding:'10px'}} onClick={() => handleRemoveTodo(todo.id)}>Remove</button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      );
+    };
+
+    ReactDOM.render(<TodoList />, document.getElementById("root"));
+
+  </script>
+</html>
