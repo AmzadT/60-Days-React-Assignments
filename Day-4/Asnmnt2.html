@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Template</title>
+  <style>
+    body {
+      font-family: sans-serif;
+    }
+
+    .todo-container {
+      max-width: 400px;
+      margin: 0 auto;
+    }
+
+    .todo-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .todo-item input[type="checkbox"] {
+      margin-right: 8px;
+    }
+
+    .completed {
+      text-decoration: line-through;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script src="https://unpkg.com/react@18.2.0/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18.2.0/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <script type="text/babel">
+    const { useState } = React;
+
+    const ToDoList = () => {
+      const [todos, setTodos] = useState([]);
+      const [newTodo, setNewTodo] = useState('');
+
+      const handleInputChange = (event) => {
+        setNewTodo(event.target.value);
+      };
+
+      const handleFormSubmit = (event) => {
+        event.preventDefault();
+        if (!newTodo.trim()) return;
+        setTodos([...todos, { id: Date.now(), text: newTodo, completed: false }]);
+        setNewTodo('');
+      };
+
+      const handleDeleteTodo = (id) => {
+        setTodos(todos.filter(todo => todo.id !== id));
+      };
+
+      const handleToggleComplete = (id) => {
+        setTodos(todos.map(todo => {
+          if (todo.id === id) {
+            return { ...todo, completed: !todo.completed };
+          }
+          return todo;
+        }));
+      };
+
+      return (
+        <div className="todo-container">
+          <h1 style={{textAlign:'center'}}>ToDo List</h1>
+          <form onSubmit={handleFormSubmit}>
+            <input
+              style={{padding:'10px',marginRight:'10px'}}
+              type="text"
+              value={newTodo}
+              onChange={handleInputChange}
+              placeholder="Add New ToDo"
+            />
+            <button style={{padding:'10px',cursor:'pointer'}} type="submit">ADD TODO</button>
+          </form>
+          <ul>
+            {todos.map(todo => (
+              <li key={todo.id} className={todo.completed ? 'completed' : ''}>
+                <label>
+                  <input
+                    type="checkbox"
+                    checked={todo.completed}
+                    onChange={() => handleToggleComplete(todo.id)}
+                  />
+                  {todo.text}
+                </label>
+                <button style={{cursor:'pointer'}} onClick={() => handleDeleteTodo(todo.id)}>Delete</button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      );
+    };
+
+    ReactDOM.render(<ToDoList />, document.getElementById('root'));
+  </script>
+</body>
+</html>
